@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .DS_Store
 node_modules/
 .env
@@ -10,3 +11,6 @@ build/
 
 # Optional
 wrangler.toml
+=======
+/ballkevin.html
+>>>>>>> 64c8fc75856dcbdae53a9548148fb80cbc79e338
