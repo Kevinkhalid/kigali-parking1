@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+.env
+.vscode/
+dist/
+build/
+*.log
+*.bak
+/.cache
+
+# Optional
+wrangler.toml

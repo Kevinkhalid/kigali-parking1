@@ -1,0 +1,26 @@
+{
+  "owner": {
+    "name": "MUNYENDAMUTSA JEAN BAPTISTE",
+    "email": "Munyendamutsakevin@gmail.com",
+    "phone": "0782658096"
+  },
+  "zones": [
+    {
+      "id": 1,
+      "name": "Central Business District",
+      "lat": -1.9499,
+      "lng": 30.0588,
+      "status": "available"
+    },
+    {
+      "id": 2,
+      "name": "University Campus",
+      "lat": -1.9460,
+      "lng": 30.0640,
+      "status": "available"
+    }
+  ],
+  "nextZoneId": 3,
+  "users": [],
+  "nextUserId": 1
+}

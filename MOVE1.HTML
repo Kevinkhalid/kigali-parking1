@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ParkEase — Smart parking management. Find, reserve, and manage parking spaces across all zones.">
+<title>ParkEase — Smart Parking Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #1a2744;
+  background: #f5f6fa;
+  line-height: 1.6;
+  font-size: 15px;
+}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; }
+button { cursor: pointer; font-family: inherit; }
+
+:root {
+  --navy:      #1a2744;
+  --navy-mid:  #243560;
+  --navy-light:#2e4580;
+  --gold:      #f0a500;
+  --gold-dark: #d4920a;
+  --white:     #ffffff;
+  --bg:        #f5f6fa;
+  --border:    #e2e6ef;
+  --text-muted:#6b7a99;
+  --radius-sm: 6px;
+  --radius:    10px;
+  --radius-lg: 14px;
+  --shadow:    0 4px 24px rgba(26,39,68,0.09);
+  --shadow-lg: 0 12px 40px rgba(26,39,68,0.14);
+}
+
+.container { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+.topbar {
+  background: var(--navy-mid);
+  padding: 6px 0;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+}
+.topbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.topbar a { color: rgba(255,255,255,0.7); transition: color .2s; }
+.topbar a:hover { color: var(--gold); }
+.topbar-left, .topbar-right { display: flex; gap: 20px; align-items: center; }
+.topbar i { margin-right: 5px; }
+
+.navbar {
+  background: var(--navy);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+}
+.navbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--white);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+.brand-icon {
+  width: 38px; height: 38px;
+  background: var(--gold);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; color: var(--navy);
+  flex-shrink: 0;
+}
+.nav-menu { display: flex; gap: 4px; align-items: center; }
+.nav-menu a {
+  color: rgba(255,255,255,0.78);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: color .2s, background .2s;
+}
+.nav-menu a:hover, .nav-menu a.active { color: var(--gold); background: rgba(255,255,255,0.06); }
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+.btn-login {
+  background: transparent;
+  color: rgba(255,255,255,0.82);
+  border: 1.5px solid rgba(255,255,255,0.22);
+  padding: 8px 18px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all .2s;
+  display: flex; align-items: center; gap: 7px;
+}
+.btn-login:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+.btn-register {
+  background: var(--gold);
+  color: var(--navy);
+  border: none;
+  padding: 9px 20px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  transition: background .2s;
+  display: flex; align-items: center; gap: 7px;
+}
+.btn-register:hover { background: var(--gold-dark); }
+.hamburger {
+  display: none;
+  background: none;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  width: 38px; height: 38px;
+  align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: border-color .2s;
+}
+.hamburger:hover { border-color: rgba(255,255,255,0.5); }
+.mobile-menu {
+  display: none;
+  background: var(--navy-mid);
+  padding: 16px 24px 20px;
+  flex-direction: column;
+  gap: 4px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  color: rgba(255,255,255,0.8);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  transition: background .2s, color .2s;
+}
+.mobile-menu a:hover { background: rgba(255,255,255,0.07); color: var(--gold); }
+.mobile-menu-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.mobile-menu-actions a {
+  flex: 1;
+  text-align: center;
+  background: var(--gold);
+  color: var(--navy);
+  padding: 10px;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.hero {
+  background: var(--navy);
+  padding: 88px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; right: -100px; top: -100px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(240,165,0,0.08) 0%, transparent 70%);
+}
+.hero::after {
+  content: '';
+  position: absolute; left: -60px; bottom: -40px;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+}
+.hero .container {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  position: relative;
+  z-index: 1;
+}
+.hero-content { flex: 1; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(240,165,0,0.14);
+  color: var(--gold);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  border: 1px solid rgba(240,165,0,0.22);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.hero h1 {
+  font-size: 50px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -1.5px;
+}
+.hero h1 span { color: var(--gold); }
+.hero-desc {
+  color: rgba(255,255,255,0.62);
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 40px;
+  max-width: 500px;
+}
+.hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-hero-primary {
+  background: var(--gold);
+  color: var(--navy);
+  padding: 14px 32px;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 700;
+  display: inline-flex; align-items: center; gap: 9px;
+  transition: background .2s, transform .15s;
+  box-shadow: 0 4px 16px rgba(240,165,0,0.3);
+}
+.btn-hero-primary:hover { background: var(--gold-dark); transform: translateY(-1px); }
+.btn-hero-outline {
+  background: transparent;
+  color: var(--white);
+  padding: 14px 32px;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+  display: inline-flex; align-items: center; gap: 9px;
+  border: 1.5px solid rgba(255,255,255,0.28);
+  transition: all .2s;
+}
+.btn-hero-outline:hover { border-color: rgba(255,255,255,0.55); background: rgba(255,255,255,0.05); }
+.hero-stats {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 165px;
+}
+.hero-stat {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-lg);
+  padding: 22px 28px;
+  text-align: center;
+  transition: background .2s;
+}
+.hero-stat:hover { background: rgba(255,255,255,0.12); }
+.hero-stat .num {
+  font-size: 32px; font-weight: 700; color: var(--gold);
+  line-height: 1; display: block;
+}
+.hero-stat .lbl {
+  font-size: 12px; color: rgba(255,255,255,0.5);
+  margin-top: 5px; display: block;
+}
+
+.search-bar {
+  background: var(--white);
+  padding: 28px 0;
+  box-shadow: 0 6px 24px rgba(26,39,68,0.08);
+  position: relative; z-index: 2;
+}
+.search-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.sf-group {
+  flex: 1; min-width: 180px;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 11px 16px;
+  transition: border-color .2s;
+}
+.sf-group:focus-within { border-color: var(--navy); }
+.sf-group i { color: #8898b0; font-size: 15px; flex-shrink: 0; }
+.sf-group input, .sf-group select {
+  border: none; background: none;
+  font-size: 14px; font-family: inherit;
+  color: var(--navy); outline: none; width: 100%;
+}
+.sf-group input::placeholder { color: #aab3c2; }
+.sf-group select { cursor: pointer; }
+.btn-search {
+  background: var(--navy); color: var(--white); border: none;
+  padding: 12px 28px; border-radius: var(--radius);
+  font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  transition: background .2s; white-space: nowrap; flex-shrink: 0;
+}
+.btn-search:hover { background: var(--navy-mid); }
+
+.section { padding: 80px 0; }
+.section-alt { background: var(--white); }
+.section-dark { background: var(--navy); }
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-header .eyebrow {
+  display: inline-block; color: var(--gold);
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
+}
+.section-header h2 {
+  font-size: 32px; font-weight: 700;
+  margin-bottom: 12px; letter-spacing: -0.5px;
+}
+.section-dark .section-header h2 { color: var(--white); }
+.section-header p { color: var(--text-muted); font-size: 16px; max-width: 520px; margin: 0 auto; }
+.section-dark .section-header p { color: rgba(255,255,255,0.55); }
+
+.zones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 22px;
+}
+.zone-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden; display: block;
+  transition: transform .22s, box-shadow .22s, border-color .22s;
+}
+.zone-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: #c8d2e8; }
+.zone-img { height: 150px; display: flex; align-items: center; justify-content: center; }
+.zone-img i { font-size: 58px; }
+.zi-blue   { background: #e6f1fb; } .zi-blue   i { color: #185fa5; }
+.zi-amber  { background: #faeeda; } .zi-amber  i { color: #ba7517; }
+.zi-green  { background: #eaf3de; } .zi-green  i { color: #3b6d11; }
+.zi-coral  { background: #faece7; } .zi-coral  i { color: #993c1d; }
+.zi-teal   { background: #e1f5ee; } .zi-teal   i { color: #0f6e56; }
+.zi-purple { background: #eeedfe; } .zi-purple i { color: #534ab7; }
+.zi-rose   { background: #fbeaf0; } .zi-rose   i { color: #993556; }
+.zi-gray   { background: #f1efe8; } .zi-gray   i { color: #5f5e5a; }
+.zi-navy   { background: #e6eaf5; } .zi-navy   i { color: #1a2744; }
+.zone-body { padding: 18px 22px 22px; }
+.zone-body h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: var(--navy); }
+.zone-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+.zone-meta { display: flex; gap: 14px; flex-wrap: wrap; }
+.zone-meta span { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+.badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
+.badge-green  { background: #eaf3de; color: #3b6d11; }
+.badge-amber  { background: #faeeda; color: #854f0b; }
+.badge-red    { background: #fcebeb; color: #a32d2d; }
+.badge-blue   { background: #e6f1fb; color: #185fa5; }
+
+.avail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 18px; }
+.avail-card {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-lg); padding: 30px 24px; text-align: center; transition: background .2s;
+}
+.avail-card:hover { background: rgba(255,255,255,0.12); }
+.avail-card .a-icon { font-size: 30px; margin-bottom: 14px; display: block; }
+.avail-card .a-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.45); margin-bottom: 10px; }
+.avail-card .a-value { font-size: 40px; font-weight: 700; line-height: 1; display: block; margin-bottom: 6px; }
+.avail-card .a-sub { font-size: 13px; color: rgba(255,255,255,0.4); }
+.avail-card.c-green .a-value { color: #63c74a; }
+.avail-card.c-amber .a-value { color: #f0a500; }
+.avail-card.c-red   .a-value { color: #e96b6b; }
+.avail-card.c-white .a-value { color: #fff; }
+
+.steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 36px; text-align: center; }
+.step-icon-wrap {
+  width: 56px; height: 56px; background: var(--gold); color: var(--navy);
+  border-radius: 50%; font-size: 22px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px; box-shadow: 0 4px 14px rgba(240,165,0,0.3);
+}
+.step h4 { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: var(--navy); }
+.step p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px; }
+.feature-card {
+  background: var(--bg); border-radius: var(--radius-lg); padding: 28px 24px;
+  border: 1px solid transparent; transition: border-color .2s, box-shadow .2s;
+}
+.feature-card:hover { border-color: var(--border); box-shadow: var(--shadow); }
+.feat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 18px; }
+.fi-blue   { background: #e6f1fb; color: #185fa5; }
+.fi-gold   { background: #faeeda; color: #ba7517; }
+.fi-green  { background: #eaf3de; color: #3b6d11; }
+.fi-purple { background: #eeedfe; color: #534ab7; }
+.fi-teal   { background: #e1f5ee; color: #0f6e56; }
+.fi-coral  { background: #faece7; color: #993c1d; }
+.feature-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+.rates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+.rate-card {
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 32px 28px; text-align: center;
+  position: relative; transition: box-shadow .22s, border-color .22s;
+}
+.rate-card:hover { box-shadow: var(--shadow); border-color: #c8d2e8; }
+.rate-card.featured { border-color: var(--gold); background: var(--white); box-shadow: 0 8px 32px rgba(240,165,0,0.15); }
+.rate-top-badge {
+  position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: var(--gold); color: var(--navy);
+  font-size: 11px; font-weight: 700; padding: 4px 16px;
+  border-radius: 20px; white-space: nowrap;
+}
+.rate-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.rate-card .rate-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; }
+.rate-price { margin-bottom: 24px; }
+.rate-price .amount { font-size: 42px; font-weight: 700; color: var(--navy); letter-spacing: -1px; }
+.rate-price .currency { font-size: 22px; font-weight: 600; vertical-align: top; margin-top: 8px; display: inline-block; }
+.rate-price .period { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+.rate-features { list-style: none; text-align: left; margin-bottom: 26px; display: flex; flex-direction: column; gap: 9px; }
+.rate-features li { font-size: 14px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
+.rate-features li i { color: #3b6d11; width: 16px; flex-shrink: 0; }
+.btn-rate {
+  display: block; width: 100%; padding: 12px; border-radius: var(--radius);
+  font-size: 14px; font-weight: 700; border: 2px solid var(--navy);
+  color: var(--navy); background: transparent; transition: all .2s;
+}
+.btn-rate:hover { background: var(--navy); color: #fff; }
+.rate-card.featured .btn-rate { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+.rate-card.featured .btn-rate:hover { background: var(--gold-dark); border-color: var(--gold-dark); }
+
+.testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+.testi-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px 24px; }
+.testi-stars { color: var(--gold); font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
+.testi-text { font-size: 14px; color: var(--text-muted); line-height: 1.75; margin-bottom: 20px; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.av1 { background: #e6f1fb; color: #185fa5; }
+.av2 { background: #eaf3de; color: #3b6d11; }
+.av3 { background: #eeedfe; color: #534ab7; }
+.av4 { background: #faeeda; color: #ba7517; }
+.testi-name { font-size: 14px; font-weight: 600; }
+.testi-role { font-size: 12px; color: var(--text-muted); }
+
+.faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.faq-item { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.faq-question {
+  width: 100%; background: none; border: none; padding: 18px 22px;
+  text-align: left; font-family: inherit; font-size: 15px; font-weight: 600;
+  color: var(--navy); display: flex; justify-content: space-between;
+  align-items: center; gap: 12px; cursor: pointer; transition: background .2s;
+}
+.faq-question:hover { background: var(--bg); }
+.faq-question i { font-size: 14px; color: var(--text-muted); transition: transform .25s; flex-shrink: 0; }
+.faq-question.open i { transform: rotate(180deg); color: var(--gold); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s; }
+.faq-answer.open { max-height: 300px; }
+.faq-answer-inner { padding: 0 22px 18px; font-size: 14px; color: var(--text-muted); line-height: 1.75; }
+
+.cta-band { background: linear-gradient(135deg, var(--gold) 0%, #e09200 100%); padding: 72px 0; text-align: center; }
+.cta-band h2 { font-size: 34px; font-weight: 700; color: var(--navy); margin-bottom: 14px; letter-spacing: -0.5px; }
+.cta-band p { font-size: 16px; color: rgba(26,39,68,0.7); margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; }
+.cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn-cta-dark {
+  background: var(--navy); color: var(--white); padding: 14px 32px;
+  border-radius: var(--radius); font-size: 15px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 9px; transition: background .2s;
+}
+.btn-cta-dark:hover { background: var(--navy-mid); }
+.btn-cta-light {
+  background: rgba(255,255,255,0.35); color: var(--navy); padding: 14px 32px;
+  border-radius: var(--radius); font-size: 15px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 9px;
+  border: 2px solid rgba(26,39,68,0.2); transition: background .2s;
+}
+.btn-cta-light:hover { background: rgba(255,255,255,0.55); }
+
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.contact-info h3 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+.contact-info p { font-size: 14px; color: var(--text-muted); line-height: 1.75; margin-bottom: 28px; }
+.contact-items { display: flex; flex-direction: column; gap: 16px; }
+.contact-item { display: flex; align-items: flex-start; gap: 14px; }
+.ci-icon { width: 40px; height: 40px; background: #e6f1fb; color: #185fa5; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+.ci-icon.gold-bg { background: #faeeda; color: #ba7517; }
+.ci-icon.green-bg { background: #eaf3de; color: #3b6d11; }
+.ci-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 3px; }
+.ci-value { font-size: 14px; font-weight: 600; color: var(--navy); }
+.contact-form { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; }
+.contact-form h3 { font-size: 18px; font-weight: 700; margin-bottom: 22px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-group label { font-size: 13px; font-weight: 600; color: var(--navy); }
+.form-group input, .form-group select, .form-group textarea {
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 10px 14px; font-size: 14px; font-family: inherit;
+  color: var(--navy); outline: none; background: var(--bg);
+  transition: border-color .2s; width: 100%;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--navy); background: var(--white); }
+.form-group textarea { resize: vertical; min-height: 110px; }
+.btn-form-submit {
+  width: 100%; background: var(--navy); color: var(--white); border: none;
+  padding: 13px; border-radius: var(--radius); font-size: 15px; font-weight: 700;
+  font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 9px;
+  transition: background .2s;
+}
+.btn-form-submit:hover { background: var(--navy-mid); }
+
+.footer { background: #0f1623; padding: 64px 0 28px; }
+.footer-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+.footer-brand-row { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; color: var(--white); margin-bottom: 14px; }
+.footer-brand-row .brand-icon { width: 34px; height: 34px; font-size: 15px; }
+.footer-tagline { font-size: 13px; color: rgba(255,255,255,0.38); line-height: 1.75; margin-bottom: 22px; max-width: 280px; }
+.footer-socials { display: flex; gap: 10px; }
+.social-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.55); font-size: 15px; transition: all .2s;
+}
+.social-btn:hover { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+.footer-col h5 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.55); margin-bottom: 18px; }
+.footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul a { font-size: 14px; color: rgba(255,255,255,0.38); transition: color .2s; }
+.footer-col ul a:hover { color: var(--gold); }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.28); }
+.footer-bottom-links { display: flex; gap: 20px; }
+.footer-bottom-links a { font-size: 13px; color: rgba(255,255,255,0.28); transition: color .2s; }
+.footer-bottom-links a:hover { color: var(--gold); }
+
+#back-to-top {
+  position: fixed; bottom: 28px; right: 28px;
+  width: 44px; height: 44px; background: var(--gold); color: var(--navy);
+  border: none; border-radius: 50%; font-size: 17px;
+  display: none; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(240,165,0,0.35); z-index: 999;
+  transition: background .2s, transform .15s; cursor: pointer;
+}
+#back-to-top.visible { display: flex; }
+#back-to-top:hover { background: var(--gold-dark); transform: translateY(-2px); }
+
+@media (max-width: 960px) {
+  .contact-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .hero .container { flex-direction: column; gap: 48px; align-items: flex-start; }
+  .hero-stats { flex-direction: row; flex-wrap: wrap; width: 100%; }
+  .hero-stat { flex: 1; min-width: 130px; padding: 16px 20px; }
+  .hero h1 { font-size: 40px; }
+}
+@media (max-width: 680px) {
+  .container { padding: 0 18px; }
+  .topbar { display: none; }
+  .nav-menu, .nav-actions { display: none; }
+  .hamburger { display: flex; }
+  .hero { padding: 60px 0 72px; }
+  .hero h1 { font-size: 32px; }
+  .hero-cta { flex-direction: column; }
+  .btn-hero-primary, .btn-hero-outline { justify-content: center; }
+  .section { padding: 56px 0; }
+  .section-header h2 { font-size: 26px; }
+  .search-form { flex-direction: column; }
+  .sf-group { min-width: 100%; }
+  .btn-search { width: 100%; justify-content: center; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .cta-actions { flex-direction: column; }
+  .btn-cta-dark, .btn-cta-light { justify-content: center; }
+  .form-row { grid-template-columns: 1fr; }
+  #back-to-top { bottom: 16px; right: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-left">
+      <span><i class="fa-solid fa-phone"></i>+250 700 000 000</span>
+      <span><i class="fa-solid fa-envelope"></i>info@parkease.rw</span>
+    </div>
+    <div class="topbar-right">
+      <span><i class="fa-regular fa-clock"></i>Open 24 / 7</span>
+      <a href="#contact">Contact Us</a>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="#" class="brand">
+      <div class="brand-icon"><i class="fa-solid fa-square-parking"></i></div>
+      ParkEase
+    </a>
+    <ul class="nav-menu">
+      <li><a href="#" class="active">Home</a></li>
+      <li><a href="#zones">Zones</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#rates">Rates</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Log in</a>
+      <button id="openRegister" class="btn-register"><i class="fa-solid fa-user-plus"></i> Register</button>
+    </div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#">Home</a>
+    <a href="#zones">Zones</a>
+    <a href="#how">How it works</a>
+    <a href="#rates">Rates</a>
+    <a href="#features">Features</a>
+    <a href="#contact">Contact</a>
+    <div class="mobile-menu-actions">
+      <a href="#">Log in</a>
+      <a href="#">Register</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fa-solid fa-circle-check"></i> Smart parking management</div>
+      <h1>Park smarter,<br><span>move faster</span></h1>
+      <p class="hero-desc">Find, reserve, and manage parking spaces across all zones — built to make urban parking effortless for drivers and operators alike.</p>
+      <div class="hero-cta">
+        <a href="#zones" class="btn-hero-primary"><i class="fa-solid fa-magnifying-glass"></i> Find a spot</a>
+        <a href="#how" class="btn-hero-outline"><i class="fa-solid fa-circle-play"></i> How it works</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="num">1,240</span><span class="lbl">Total spaces</span></div>
+      <div class="hero-stat"><span class="num">18</span><span class="lbl">Parking zones</span></div>
+      <div class="hero-stat"><span class="num">94%</span><span class="lbl">Satisfaction rate</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="search-bar">
+  <div class="container">
+    <form class="search-form" onsubmit="return false;">
+      <div class="sf-group" style="flex:2;">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search by zone, location or landmark…">
+      </div>
+      <div class="sf-group">
+        <i class="fa-solid fa-map-pin"></i>
+        <select>
+          <option>All zones</option>
+          <option>City centre</option>
+          <option>Airport</option>
+          <option>Hospital</option>
+          <option>Campus</option>
+          <option>Shopping mall</option>
+        </select>
+      </div>
+      <div class="sf-group">
+        <i class="fa-regular fa-clock"></i>
+        <select>
+          <option>Any time</option>
+          <option>Now — open spots</option>
+          <option>Today</option>
+          <option>This week</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-search"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+    </form>
+  </div>
+</div>
+
+<section class="section" id="zones">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">All locations</span>
+      <h2>Explore Parking Zones</h2>
+      <p>Choose from our range of parking areas across the city. All zones are monitored 24/7.</p>
+    </div>
+    <div class="zones-grid">
+      <a href="#" class="zone-card">
+        <div class="zone-img zi-blue"><i class="fa-solid fa-building"></i></div>
+        <div class="zone-body">
+          <span class="badge badge-green">Available</span>
+          <h3>Central Business District</h3>
+          <p class="zone-desc">Multi-level parking at the heart of the city, steps from banks and offices.</p>
+          <div class="zone-meta">
+            <span><i class="fa-solid fa-layer-group"></i> 3 sub-zones</span>
+            <span><i class="fa-solid fa-car"></i> 420 spaces</span>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="zone-card">
+        <div class="zone-img zi-amber"><i class="fa-solid fa-graduation-cap"></i></div>
+        <div class="zone-body">
+          <span class="badge badge-amber">Busy</span>
+          <h3>University Campus</h3>
+          <p class="zone-desc">Dedicated student and staff parking with permit and pay-as-you-go options.</p>
+          <div class="zone-meta">
+            <span><i class="fa-solid fa-layer-group"></i> 2 sub-zones</span>
+            <span><i class="fa-solid fa-car"></i> 210 spaces</span>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="zone-card">
+        <div class="zone-img zi-green"><i class="fa-solid fa-hospital"></i></div>
+        <div class="zone-body">
+          <span class="badge badge-green">Available</span>
+          <h3>Hospital &amp; Health Centre</h3>
+          <p class="zone-desc">Priority spaces for patients and visitors, with short-stay and long-stay bays.</p>
+          <div class="zone-meta">
+            <span><i class="fa-solid fa-layer-group"></i> 3 sub-zones</span>
+            <span><i class="fa-solid fa-car"></i> 185 spaces</span>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="zone-card">
+        <div class="zone-img zi-coral"><i class="fa-solid fa-bag-shopping"></i></div>
+        <div class="zone-body">
+          <span class="badge badge-amber">Busy</span>
+          <h3>Shopping Mall</h3>
+          <p class="zone-desc">Free first 2 hours, then standard rates. Covered parking with CCTV.</p>
+          <div class="zone-meta">
+            <span><i class="fa-solid fa-layer-group"></i> 4 sub-zones</span>
+            <span><i class="fa-solid fa-car"></i> 300 spaces</span>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="zone-card">
+        <div class="zone-img zi-teal"><i class="fa-solid fa-plane"></i></div>
+        <div class="zone-body">
+          <span class="badge badge-green">Available</span>
+          <h3>Airport Long-Stay</h3>
+          <p class="zone-desc">Secure long-term parking with shuttle to terminals. Discounts for 7+ days.</p>
+          <div class="zone-meta">
+            <span><i class="fa-solid fa-layer-group"></i> 2 sub-zones</span>
+            <span><i class="fa-solid fa-car"></i> 560 spaces</span>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="zone-card">
+        <div class="zone-img zi-purple"><i class="fa-solid fa-wheelchair"></i></div>
+        <div class="zone-body">
+          <span class="badge badge-blue">Priority</span>
+          <h3>Accessible Parking</h3>
+          <p class="zone-desc">Wide, clearly marked bays close to entrances. Free with valid disability permit.</p>
+          <div class="zone-meta">
+            <span><i class="fa-solid fa-layer-group"></i> City-wide</span>
+            <span><i class="fa-solid fa-car"></i> 48 spaces</span>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="zone-card">
+        <div class="zone-img zi-rose"><i class="fa-solid fa-bolt"></i></div>
+        <div class="zone-body">
+          <span class="badge badge-green">Available</span>
+          <h3>EV Charging Bays</h3>
+          <p class="zone-desc">Fast and standard chargers. Reserve a charging spot in advance via the app.</p>
+          <div class="zone-meta">
+            <span><i class="fa-solid fa-layer-group"></i> 1 sub-zone</span>
+            <span><i class="fa-solid fa-car"></i> 32 spaces</span>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="zone-card">
+        <div class="zone-img zi-gray"><i class="fa-solid fa-moon"></i></div>
+        <div class="zone-body">
+          <span class="badge badge-red">Full</span>
+          <h3>Overnight Parking</h3>
+          <p class="zone-desc">Affordable overnight rates. Guarded premises with 24/7 security patrol.</p>
+          <div class="zone-meta">
+            <span><i class="fa-solid fa-layer-group"></i> 2 sub-zones</span>
+            <span><i class="fa-solid fa-car"></i> 140 spaces</span>
+          </div>
+        </div>
+      </a>
+      <a href="#" class="zone-card">
+        <div class="zone-img zi-navy"><i class="fa-solid fa-motorcycle"></i></div>
+        <div class="zone-body">
+          <span class="badge badge-green">Available</span>
+          <h3>Motorcycle Bays</h3>
+          <p class="zone-desc">Dedicated motorcycle spaces at every major zone at discounted rates.</p>
+          <div class="zone-meta">
+            <span><i class="fa-solid fa-layer-group"></i> City-wide</span>
+            <span><i class="fa-solid fa-car"></i> 95 spaces</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow" style="color:var(--gold);">Real-time data</span>
+      <h2>Live Availability</h2>
+      <p>Updated every 2 minutes across all zones</p>
+    </div>
+    <div class="avail-grid">
+      <div class="avail-card c-green">
+        <span class="a-icon">🟢</span>
+        <div class="a-label">Available now</div>
+        <span class="a-value" id="available-count">387</span>
+        <div class="a-sub">Open spaces</div>
+      </div>
+      <div class="avail-card c-amber">
+        <span class="a-icon">🟡</span>
+        <div class="a-label">Reserved</div>
+        <span class="a-value">512</span>
+        <div class="a-sub">Booked ahead</div>
+      </div>
+      <div class="avail-card c-red">
+        <span class="a-icon">🔴</span>
+        <div class="a-label">Occupied</div>
+        <span class="a-value" id="occupied-count">341</span>
+        <div class="a-sub">Currently in use</div>
+      </div>
+      <div class="avail-card c-white">
+        <span class="a-icon">🅿️</span>
+        <div class="a-label">Total capacity</div>
+        <span class="a-value">1,240</span>
+        <div class="a-sub">All zones combined</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="how">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Simple process</span>
+      <h2>How it works</h2>
+      <p>From search to parked in four easy steps — no queuing, no stress.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-icon-wrap">1</div>
+        <h4>Search a zone</h4>
+        <p>Enter your destination or browse zones on the map to see available spaces near you in real time.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon-wrap">2</div>
+        <h4>Pick your spot</h4>
+        <p>Choose your preferred space, select your arrival time, and review the hourly or daily rate clearly.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon-wrap">3</div>
+        <h4>Reserve &amp; go</h4>
+        <p>Confirm your booking online and head straight to your reserved space — no queuing at the gate.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon-wrap">4</div>
+        <h4>Pay with ease</h4>
+        <p>Pay securely by card or mobile money. Receipts and confirmation are sent instantly to your email.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Why ParkEase</span>
+      <h2>Everything you need</h2>
+      <p>Built for drivers, operators, and city administrators — all in one platform.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-icon fi-blue"><i class="fa-solid fa-location-dot"></i></div>
+        <h4>Real-time availability</h4>
+        <p>Live updates every 2 minutes across all zones. Never drive around looking for a space again.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon fi-gold"><i class="fa-solid fa-mobile-screen"></i></div>
+        <h4>Book from your phone</h4>
+        <p>Reserve a space from anywhere — on the web or via the mobile app. iOS and Android supported.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon fi-green"><i class="fa-solid fa-shield-halved"></i></div>
+        <h4>Secure &amp; monitored</h4>
+        <p>All zones have 24/7 CCTV, security patrols, and access-controlled entry for your peace of mind.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon fi-purple"><i class="fa-solid fa-credit-card"></i></div>
+        <h4>Flexible payment</h4>
+        <p>Pay by card, mobile money, or bank transfer. Receipts sent automatically after every transaction.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon fi-teal"><i class="fa-solid fa-bolt"></i></div>
+        <h4>EV charging</h4>
+        <p>Fast and standard EV chargers at selected zones. Reserve a charging bay alongside your parking.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon fi-coral"><i class="fa-solid fa-chart-bar"></i></div>
+        <h4>Operator dashboard</h4>
+        <p>Full analytics, occupancy reports, and revenue tracking for parking operators and managers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="rates">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Transparent pricing</span>
+      <h2>Simple, honest rates</h2>
+      <p>No hidden fees. Choose the plan that fits your parking habit.</p>
+    </div>
+    <div class="rates-grid">
+      <div class="rate-card">
+        <h3>Hourly</h3>
+        <p class="rate-desc">For short visits and quick errands</p>
+        <div class="rate-price">
+          <span class="currency">RWF</span><span class="amount">500</span>
+          <span class="period"> / hour</span>
+        </div>
+        <ul class="rate-features">
+          <li><i class="fa-solid fa-check"></i> Pay as you go</li>
+          <li><i class="fa-solid fa-check"></i> No reservation required</li>
+          <li><i class="fa-solid fa-check"></i> All public zones</li>
+          <li><i class="fa-solid fa-check"></i> Mobile receipt</li>
+        </ul>
+        <a href="#" class="btn-rate">Get started</a>
+      </div>
+      <div class="rate-card featured">
+        <div class="rate-top-badge">Most popular</div>
+        <h3>Daily</h3>
+        <p class="rate-desc">Best value for full-day stays</p>
+        <div class="rate-price">
+          <span class="currency">RWF</span><span class="amount">3,500</span>
+          <span class="period"> / day</span>
+        </div>
+        <ul class="rate-features">
+          <li><i class="fa-solid fa-check"></i> Up to 24 hours</li>
+          <li><i class="fa-solid fa-check"></i> Guaranteed spot</li>
+          <li><i class="fa-solid fa-check"></i> All zones included</li>
+          <li><i class="fa-solid fa-check"></i> Free cancellation</li>
+        </ul>
+        <a href="#" class="btn-rate">Reserve now</a>
+      </div>
+      <div class="rate-card">
+        <h3>Monthly</h3>
+        <p class="rate-desc">For commuters and regular users</p>
+        <div class="rate-price">
+          <span class="currency">RWF</span><span class="amount">45,000</span>
+          <span class="period"> / month</span>
+        </div>
+        <ul class="rate-features">
+          <li><i class="fa-solid fa-check"></i> Reserved bay</li>
+          <li><i class="fa-solid fa-check"></i> Unlimited entry/exit</li>
+          <li><i class="fa-solid fa-check"></i> Priority support</li>
+          <li><i class="fa-solid fa-check"></i> Easy renewal</li>
+        </ul>
+        <a href="#" class="btn-rate">Subscribe</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">What drivers say</span>
+      <h2>Trusted by thousands</h2>
+      <p>Hear from drivers and businesses using ParkEase every day.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I used to waste 20 minutes finding parking every morning. Now I reserve from home and walk straight to my office. ParkEase changed my commute."</p>
+        <div class="testi-author">
+          <div class="testi-avatar av1">JM</div>
+          <div><div class="testi-name">Jean Marie Hakizimana</div><div class="testi-role">Daily commuter, CBD zone</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The airport long-stay parking is secure and the shuttle is always on time. Much cheaper than keeping a taxi waiting. I book it every trip now."</p>
+        <div class="testi-author">
+          <div class="testi-avatar av2">AM</div>
+          <div><div class="testi-name">Amina Muhire</div><div class="testi-role">Frequent traveller</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★☆</div>
+        <p class="testi-text">"As a mall operator, the dashboard gives us full occupancy visibility and we can adjust pricing in real time. Revenue is up 18% since switching."</p>
+        <div class="testi-author">
+          <div class="testi-avatar av3">EK</div>
+          <div><div class="testi-name">Eric Kalisa</div><div class="testi-role">Parking Operations Manager</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The EV charging bay booking is seamless. I arrive, my spot is ready and charging already set up. Exactly what Kigali needed."</p>
+        <div class="testi-author">
+          <div class="testi-avatar av4">CR</div>
+          <div><div class="testi-name">Claudine Rwigema</div><div class="testi-role">EV driver, Kimihurura</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Questions</span>
+      <h2>Frequently asked</h2>
+      <p>Everything you need to know before your first booking.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">How do I reserve a parking space? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Search your preferred zone, select an available space and time slot, then confirm your booking. You will receive a confirmation by email or SMS with your space number and entry code.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Can I cancel or change my reservation? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes. You can cancel or modify a reservation up to 30 minutes before your arrival time for a full refund. Cancellations made later may incur a small processing fee.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">What payment methods are accepted? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-answer"><div class="faq-answer-inner">We accept all major debit and credit cards (Visa, Mastercard), MTN Mobile Money, Airtel Money, and bank transfer for monthly subscriptions.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Are the parking zones secure? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-answer"><div class="faq-answer-inner">All zones are monitored 24/7 with CCTV cameras, regular security patrols, and access-controlled barriers. Your vehicle's safety is our top priority.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Do you have a mobile app? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes! The ParkEase app is available for iOS and Android. You can search zones, reserve spaces, pay, and navigate to your spot — all from your phone.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">How do I get a monthly parking permit? <i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Choose the Monthly plan, select your preferred zone, and complete the online form. A dedicated bay will be assigned to you and your access card sent within 24 hours.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container">
+    <h2>Ready to find your spot?</h2>
+    <p>Join thousands of drivers parking smarter across the city every day.</p>
+    <div class="cta-actions">
+      <a href="#zones" class="btn-cta-dark"><i class="fa-solid fa-magnifying-glass"></i> Browse zones</a>
+      <a href="#contact" class="btn-cta-light"><i class="fa-solid fa-phone"></i> Talk to us</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="contact">
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Get in touch</span>
+      <h2>Contact us</h2>
+      <p>Questions, issues, or partnership enquiries — we reply within one business day.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>We're here to help</h3>
+        <p>Our team is available 7 days a week to help with reservations, technical support, or billing questions.</p>
+        <div class="contact-items">
+          <div class="contact-item">
+            <div class="ci-icon"><i class="fa-solid fa-phone"></i></div>
+            <div><div class="ci-label">Phone</div><div class="ci-value">+250 700 000 000</div></div>
+          </div>
+          <div class="contact-item">
+            <div class="ci-icon gold-bg"><i class="fa-solid fa-envelope"></i></div>
+            <div><div class="ci-label">Email</div><div class="ci-value">info@parkease.rw</div></div>
+          </div>
+          <div class="contact-item">
+            <div class="ci-icon green-bg"><i class="fa-solid fa-location-dot"></i></div>
+            <div><div class="ci-label">Head office</div><div class="ci-value">KN 5 Rd, Kigali, Rwanda</div></div>
+          </div>
+          <div class="contact-item">
+            <div class="ci-icon"><i class="fa-regular fa-clock"></i></div>
+            <div><div class="ci-label">Support hours</div><div class="ci-value">24 hours, 7 days a week</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <h3>Send us a message</h3>
+        <div class="form-row">
+          <div class="form-group"><label for="fname">First name</label><input type="text" id="fname" placeholder="Jean"></div>
+          <div class="form-group"><label for="lname">Last name</label><input type="text" id="lname" placeholder="Hakizimana"></div>
+        </div>
+        <div class="form-group"><label for="email">Email address</label><input type="email" id="email" placeholder="you@example.com"></div>
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject">
+            <option>General enquiry</option>
+            <option>Reservation help</option>
+            <option>Payment issue</option>
+            <option>Report a problem</option>
+            <option>Partnership / business</option>
+          </select>
+        </div>
+        <div class="form-group"><label for="message">Message</label><textarea id="message" placeholder="Describe your question or issue…"></textarea></div>
+        <button type="button" class="btn-form-submit" onclick="handleFormSubmit(this)">
+          <i class="fa-solid fa-paper-plane"></i> Send message
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-row">
+          <div class="brand-icon"><i class="fa-solid fa-square-parking"></i></div>
+          ParkEase
+        </div>
+        <p class="footer-tagline">Smart parking management for modern cities. Find, reserve, and manage your space in seconds — across 18 zones citywide.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Parking</h5>
+        <ul>
+          <li><a href="#zones">Find a spot</a></li>
+          <li><a href="#">Reserve online</a></li>
+          <li><a href="#rates">Season passes</a></li>
+          <li><a href="#">EV charging</a></li>
+          <li><a href="#">Accessible zones</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Zones</h5>
+        <ul>
+          <li><a href="#">City centre</a></li>
+          <li><a href="#">Airport</a></li>
+          <li><a href="#">Hospital</a></li>
+          <li><a href="#">Shopping mall</a></li>
+          <li><a href="#">Campus</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About us</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Privacy policy</a></li>
+          <li><a href="#">Terms of use</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ParkEase. All rights reserved.</p>
+      <p class="footer-owner">Owner: MUNYENDAMUTSA JEAN BAPTISTE — Email: munyendamutsa@gmail.com — Phone: 0782658096</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fa-solid fa-chevron-up"></i>
+</button>
+
+<!-- Registration dialog -->
+<dialog id="registerDialog" class="register-dialog">
+  <form id="registerForm">
+    <h3 id="authTitle">Register / Login</h3>
+    <label>Name<br><input name="name" id="fieldName"></label>
+    <label>Email<br><input type="email" name="email" id="fieldEmail" required></label>
+    <label>Password<br><input type="password" name="password" id="fieldPassword" required></label>
+    <label>Phone<br><input name="phone" id="fieldPhone"></label>
+    <div style="margin-top:12px; display:flex; gap:8px;">
+      <button type="submit" id="authSubmit" class="btn-register">Register</button>
+      <button type="button" id="authToggle" class="btn-hero-outline">Switch to Login</button>
+      <button type="button" id="cancelRegister" class="btn-hero-outline">Cancel</button>
+    </div>
+    <p id="registerMsg" style="margin-top:10px;font-size:13px;color:var(--text-muted)"></p>
+  </form>
+</dialog>
+
+<script>
+const hamburger = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', function () {
+  const open = mobileMenu.classList.toggle('open');
+  hamburger.setAttribute('aria-expanded', open);
+  hamburger.querySelector('i').className = open ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+});
+mobileMenu.querySelectorAll('a').forEach(function (link) {
+  link.addEventListener('click', function () {
+    mobileMenu.classList.remove('open');
+    hamburger.querySelector('i').className = 'fa-solid fa-bars';
+  });
+});
+
+document.querySelectorAll('.faq-question').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    const answer = this.nextElementSibling;
+    const isOpen = this.classList.contains('open');
+    document.querySelectorAll('.faq-question').forEach(function (b) {
+      b.classList.remove('open');
+      b.nextElementSibling.classList.remove('open');
+    });
+    if (!isOpen) { this.classList.add('open'); answer.classList.add('open'); }
+  });
+});
+
+const backToTop = document.getElementById('back-to-top');
+window.addEventListener('scroll', function () {
+  backToTop.classList.toggle('visible', window.scrollY > 400);
+});
+
+function animateCount(el, target) {
+  var start = 0, step = Math.ceil(target / 112);
+  var timer = setInterval(function () {
+    start = Math.min(start + step, target);
+    el.textContent = start.toLocaleString();
+    if (start >= target) clearInterval(timer);
+  }, 16);
+}
+var counted = false;
+var observer = new IntersectionObserver(function (entries) {
+  if (entries[0].isIntersecting && !counted) {
+    counted = true;
+    animateCount(document.getElementById('available-count'), 387);
+    animateCount(document.getElementById('occupied-count'), 341);
+  }
+}, { threshold: 0.3 });
+observer.observe(document.querySelector('.section-dark'));
+
+function handleFormSubmit(btn) {
+  var fname = document.getElementById('fname').value.trim();
+  var email = document.getElementById('email').value.trim();
+  var message = document.getElementById('message').value.trim();
+  if (!fname || !email || !message) {
+    btn.textContent = 'Please fill all required fields';
+    btn.style.background = '#a32d2d';
+    setTimeout(function () { btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send message'; btn.style.background = ''; }, 2500);
+    return;
+  }
+  btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Message sent! We\'ll reply soon.';
+  btn.style.background = '#3b6d11';
+  btn.disabled = true;
+}
+
+// Registration dialog logic
+const openRegister = document.getElementById('openRegister');
+const registerDialog = document.getElementById('registerDialog');
+const registerForm = document.getElementById('registerForm');
+const cancelRegister = document.getElementById('cancelRegister');
+const registerMsg = document.getElementById('registerMsg');
+const authToggle = document.getElementById('authToggle');
+const authTitle = document.getElementById('authTitle');
+const authSubmit = document.getElementById('authSubmit');
+
+let isLogin = false; // start in Register mode
+
+openRegister && openRegister.addEventListener('click', function () { if (registerDialog.showModal) registerDialog.showModal(); else registerDialog.style.display = 'block'; });
+cancelRegister && cancelRegister.addEventListener('click', function () { if (registerDialog.close) registerDialog.close(); else registerDialog.style.display = 'none'; registerMsg.textContent = ''; registerForm.reset(); isLogin = false; authTitle.textContent = 'Register / Login'; authSubmit.textContent = 'Register'; });
+
+authToggle && authToggle.addEventListener('click', function () {
+  isLogin = !isLogin;
+  if (isLogin) {
+    authTitle.textContent = 'Login';
+    authSubmit.textContent = 'Sign in';
+    document.getElementById('fieldName').style.display = 'none';
+    document.getElementById('fieldPhone').style.display = 'none';
+  } else {
+    authTitle.textContent = 'Register';
+    authSubmit.textContent = 'Register';
+    document.getElementById('fieldName').style.display = '';
+    document.getElementById('fieldPhone').style.display = '';
+  }
+});
+
+registerForm && registerForm.addEventListener('submit', async function (e) {
+  e.preventDefault();
+  registerMsg.textContent = 'Submitting...';
+  const data = Object.fromEntries(new FormData(registerForm));
+  try {
+    if (isLogin) {
+      const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: data.email, password: data.password }) });
+      if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.error || 'Login failed'); }
+      const payload = await res.json();
+      registerMsg.style.color = 'green';
+      registerMsg.textContent = 'Welcome, ' + (payload.user.name || payload.user.email);
+      // store token locally for demo
+      localStorage.setItem('token', payload.token);
+      setTimeout(() => { if (registerDialog.close) registerDialog.close(); else registerDialog.style.display = 'none'; registerMsg.textContent = ''; registerForm.reset(); }, 900);
+    } else {
+      const res = await fetch('/api/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.error || 'Registration failed'); }
+      const user = await res.json();
+      registerMsg.style.color = 'green';
+      registerMsg.textContent = 'Registered — ID ' + user.id;
+      setTimeout(() => { if (registerDialog.close) registerDialog.close(); else registerDialog.style.display = 'none'; registerMsg.textContent = ''; registerForm.reset(); }, 1200);
+    }
+  } catch (err) {
+    registerMsg.style.color = '#a32d2d';
+    registerMsg.textContent = err.message || 'Operation failed';
+    console.error(err);
+  }
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+  anchor.addEventListener('click', function (e) {
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) { e.preventDefault(); window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>
